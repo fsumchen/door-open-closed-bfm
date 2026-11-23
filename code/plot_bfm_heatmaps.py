@@ -28,7 +28,7 @@ def main():
  sy=top+ploth+12
  for b in range(ncols):
   if labels[b]:
-   state=labels[b].most_common(1)[0][0]; color='#3667a8' if state=='open' else '#d27b29'
+   state=labels[b].most_common(1)[0][0]; color={'open':'#3667a8','closed':'#d27b29'}.get(state,'#999999')
    out.append(f'<rect x="{left+b*cellw}" y="{sy}" width="{cellw+0.2}" height="12" fill="{color}"/>')
  for sec in range(0,721,120):
   x=left+int(sec/a.bin_seconds)*cellw

@@ -41,10 +41,11 @@ def main():
     ap.add_argument("--labels", type=Path, default=Path("data/labels/session_intervals.csv"))
     ap.add_argument("--output", required=True, type=Path)
     ap.add_argument("--transition-margin", type=float, default=5.0)
+    ap.add_argument("--include-unlabeled", action="store_true", help="export reports without an interval label as unlabeled")
     ap.add_argument("--tshark", default=shutil.which("tshark") or "tshark")
     args = ap.parse_args()
     intervals = intervals_for(args.labels, args.session)
-    if not intervals:
+    if not intervals and not args.include_unlabeled:
         raise SystemExit(f"No interval labels recorded for {args.session}")
     filt = ("wlan.fc.type_subtype == 0x000e && "
             f"wlan.ta == {args.client} && wlan.ra == {args.ap} && "
@@ -66,8 +67,11 @@ def main():
             t = float(fields[0])
             label = state_at(t, intervals, args.transition_margin)
             if label is None:
-                continue
-            state, certainty = label
+                if not args.include_unlabeled:
+                    continue
+                state, certainty = "unlabeled", "point_note_only"
+            else:
+                state, certainty = label
             matches = ANGLE_RE.findall(fields[2])
             if not matches:
                 continue
@@ -81,7 +85,7 @@ def main():
                              json.dumps([round(360*(v+0.5)/64, 4) for v in phi], separators=(",", ":")),
                              json.dumps([round(90*(v+0.5)/16, 4) for v in psi], separators=(",", ":"))])
             kept += 1
-    print(f"Wrote {kept} labeled BFM reports to {args.output}")
+    print(f"Wrote {kept} BFM reports to {args.output}")
     if kept == 0:
         raise SystemExit("No reports landed inside labeled intervals after transition exclusion")
 

@@ -159,3 +159,14 @@ Raw source PCAPs remain outside this repo. The local capture log was extended wi
 - `day1-session3` produced 1,666 VHT reports with 108 tones and one report with 52 tones. The report's VHT channel-width field is captured separately from the monitor tuning width.
 
 The label distribution is highly imbalanced and correlated with session: session 2 is almost entirely open after the transition; session 3 is almost entirely closed after its transition. Collect more alternating blocks and additional days before treating any model metric as a final result.
+
+## Recovered project session 1
+
+The raw file `door-day1-session1.pcapng` was recovered from Downloads and copied to the local archive at `~/Documents/bfm-data/door-day1-session1.pcapng`; it is still excluded from Git.
+
+- Capture timestamps: 2026-11-23 00:36:19.619 UTC through 00:48:19.616 UTC; 12 minutes.
+- 389,492 packets, zero drops; radiotap frequency 5220 MHz (channel 44).
+- 916 BFM reports from the target iPhone to the Ruckus AP and 78 NDPA frames overall.
+- The notes say `45: closed door`. This is kept as a point observation at 00:45, not expanded into an interval because the surrounding state boundaries are unknown.
+- The target AP BSSID differed from the later sessions' AP radio; all addresses remain redacted in this document.
+- The 916 BFM reports are exported in `data/derived/day1-session1-unlabeled.csv` for exploration only; they are excluded from labeled windows.

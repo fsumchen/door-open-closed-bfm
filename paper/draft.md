@@ -4,7 +4,7 @@
 
 ## Abstract (provisional)
 
-Wi-Fi beamforming feedback (BFM) is generated when a client reports channel information to an access point for transmit beamforming. This project investigates whether angle values decoded from BFM sent by an author's iPhone can distinguish an open door from a closed door. We implemented passive capture with an Intel AX211 monitor interface and extracted VHT compressed beamforming reports sent to a Ruckus access point. Two 12-minute captures from one day currently provide 2,322 phone BFM reports before label-boundary exclusions. The available labels are highly imbalanced within each session, and the two sessions are from the same day; a session-held-out diagnostic therefore cannot provide a credible estimate of door-state classification performance. The present work establishes a capture and decoding pipeline and identifies the need for balanced, multi-day collection before drawing sensing conclusions.
+Wi-Fi beamforming feedback (BFM) is generated when a client reports channel information to an access point for transmit beamforming. This project investigates whether angle values decoded from BFM sent by an author's iPhone can distinguish an open door from a closed door. We implemented passive capture with an Intel AX211 monitor interface and extracted VHT compressed beamforming reports sent to a Ruckus access point. Three 12-minute captures from one day provide 3,238 phone BFM reports, of which 916 currently have no interval label. The two interval-labeled sessions are highly imbalanced within each session and are from the same day; a session-held-out diagnostic therefore cannot provide a credible estimate of door-state classification performance. The present work establishes a capture and decoding pipeline and identifies the need for balanced, multi-day collection before drawing sensing conclusions.
 
 ## 1. Introduction
 
@@ -26,7 +26,7 @@ The monitor radio width and the VHT report's indicated bandwidth are distinct. T
 
 ### 3.2 Sessions and labels
 
-Two raw 12-minute captures are currently available. Both were collected on 23 November 2026, using the same AP/client pair. Session 1's raw file is unavailable. The supplied notes indicate one transition per available session:
+Three raw 12-minute captures are now available locally. All were collected on 23 November 2026. Session 1 used a different AP radio from sessions 2 and 3, and its only door note is “45: closed door.” That point observation does not establish the door state over a surrounding interval, so session 1 is retained as unlabeled data and excluded from the model windows. The supplied notes indicate one transition per interval-labeled session:
 
 | Session | Recorded label timeline | Extracted labeled BFM reports after 5 s transition margin |
 |---|---|---:|
@@ -43,13 +43,17 @@ For exploratory modeling, reports are grouped into non-overlapping 30-second win
 
 ## 5. Preliminary Results and Evaluation Status
 
-The capture pipeline reported 389,492 packets with zero drops for session 1 (its raw file is no longer available), 827,793 packets with zero drops for session 2, and approximately 925,000 packets for session 3; all available dumpcap summaries reported zero drops. The two available project captures produced 655 and 1,667 iPhone BFM reports, respectively. The parser retained 648 and 1,636 reports after excluding transition margins.
+The capture pipeline reported 389,492 packets with zero drops for session 1, 827,793 packets with zero drops for session 2, and approximately 925,000 packets for session 3; all available dumpcap summaries reported zero drops. The three project captures produced 916, 655, and 1,667 iPhone BFM reports, respectively; session 1 is unlabeled. The parser retained 648 and 1,636 reports in sessions 2 and 3 after excluding transition margins. Session 1 also yielded 78 NDPA frames overall, but this count is not treated as a door-state label or model result.
 
 The present data cannot support a final accuracy claim. The 30-second dataset contains 35 windows: 14 open windows from session 2, and 19 closed plus 2 open windows from session 3. In leave-one-session-out diagnostics, one fold tests only the open class; the other fold is skipped because its training session lacks usable windows from both classes. The tested fold's 0/14 accuracy is a diagnostic of the invalid split/data balance, not evidence that the sensing hypothesis fails or succeeds. A balanced, multi-day dataset is needed before model comparison or final evaluation.
 
 ![Session 2 exploratory phi heatmap](figures/session2_phi_heatmap.svg)
 
 ![Session 3 exploratory phi heatmap](figures/session3_phi_heatmap.svg)
+
+![Session 1 unlabeled phi heatmap](figures/session1_phi_heatmap.svg)
+
+Session 1's heatmap is descriptive only. The “45: closed door” note is a point observation and is not used to label a time interval.
 
 ## 6. Limitations and Next Experiments
 

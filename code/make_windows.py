@@ -36,6 +36,8 @@ def main():
     for path in a.inputs:
         with path.open(newline='',encoding='utf-8') as f:
             for row in csv.DictReader(f):
+                if row['door_state'] not in ('open', 'closed'):
+                    continue
                 t=float(row['time_s']); key=(row['session_id'],int(t//a.window_seconds))
                 feats=report_features(row); keys=list(feats)
                 groups[key].append((t,row['door_state'],feats))

@@ -25,7 +25,7 @@ Run `dumpcap` only after the enter script confirms `mon0` is monitor mode on cha
 
 ## Data and current status
 
-Two raw 12-minute captures from the same day are available locally and are excluded from the repository. Session 1's raw file is unavailable. Only selected BFM reports from the user's phone are included as derived data.
+Three raw 12-minute captures from the same day are available locally and are excluded from the repository. Session 1 has only a point label note, so its 916 extracted phone reports are retained as unlabeled data. Sessions 2 and 3 have interval labels. Only selected BFM reports from the user's phone are included as derived data.
 
 - Session 2: closed from 0–65 s; open from 65 s to end, based on the supplied notes.
 - Session 3: open from 0–83 s; closed from 83 s to end, based on the supplied notes.
