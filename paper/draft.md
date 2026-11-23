@@ -1,10 +1,10 @@
 # Door-State Sensing from Wi-Fi Beamforming Feedback: A Feasibility Study
 
-**Draft status:** exploratory. Do not submit this manuscript until additional balanced, labeled sessions and a valid session-held-out evaluation are complete.
+**Draft status:** exploratory. Four new five-minute captures and a preliminary diagnostic are included, but all data is from one day and a different-day held-out evaluation is still required. Do not submit this manuscript as final.
 
 ## Abstract (provisional)
 
-Wi-Fi beamforming feedback (BFM) is generated when a client reports channel information to an access point for transmit beamforming. This project investigates whether angle values decoded from BFM sent by an author's iPhone can distinguish an open door from a closed door. We implemented passive capture with an Intel AX211 monitor interface and extracted VHT compressed beamforming reports sent to a Ruckus access point. Three 12-minute captures from one day provide 3,238 phone BFM reports, of which 916 currently have no interval label. The two interval-labeled sessions are highly imbalanced within each session and are from the same day; a session-held-out diagnostic therefore cannot provide a credible estimate of door-state classification performance. The present work establishes a capture and decoding pipeline and identifies the need for balanced, multi-day collection before drawing sensing conclusions.
+Wi-Fi beamforming feedback (BFM) is generated when a client reports channel information to an access point for transmit beamforming. This project investigates whether angle values decoded from BFM sent by an author's iPhone can distinguish an open door from a closed door. We implemented passive capture with an Intel AX211 monitor interface and extracted VHT compressed beamforming reports sent to a Ruckus access point. The current derived dataset contains 11,364 labeled reports across two original interval-labeled 12-minute sessions and four additional five-minute single-state captures, plus 916 unlabeled reports. In a same-day paired holdout, a standardized nearest-centroid baseline classified 19 of 20 windows correctly (95.0%); capture-level leave-one-out folds average 22.0%. Both are exploratory: all captures are from one day, test sets are small, and env1 changes AP radio between states. These results do not establish generalizable door-state sensing. A different-day held-out evaluation remains outstanding.
 
 ## 1. Introduction
 
@@ -26,14 +26,18 @@ The monitor radio width and the VHT report's indicated bandwidth are distinct. T
 
 ### 3.2 Sessions and labels
 
-Three raw 12-minute captures are now available locally. All were collected on 23 November 2026. Session 1 used a different AP radio from sessions 2 and 3, and its only door note is “45: closed door.” That point observation does not establish the door state over a surrounding interval, so session 1 is retained as unlabeled data and excluded from the model windows. The supplied notes indicate one transition per interval-labeled session:
+The original three 12-minute captures and four five-minute captures were collected on 23 November 2026. Session 1 used a different AP radio from sessions 2 and 3, and its only door note is “45: closed door.” That point observation does not establish the door state over an interval, so session 1 is retained as unlabeled data and excluded from the model windows. Sessions 2 and 3 use one recorded transition each. Four additional captures record one reported door state per file:
 
 | Session | Recorded label timeline | Extracted labeled BFM reports after 5 s transition margin |
 |---|---|---:|
 | Day 1, session 2 | Closed 0–65 s; open 65–720 s (assumes no later change) | 648: 4 closed, 644 open |
 | Day 1, session 3 | Open 0–83 s; closed 83–720 s (assumes no later change) | 1,636: 76 open, 1,560 closed |
+| Day 1, env1 open | Open for 5 minutes | 1,504 |
+| Day 1, env1 closed | Closed for 5 minutes | 3,183 |
+| Day 1, env2 open | Open for 5 minutes | 2,303 |
+| Day 1, env2 closed | Closed for 5 minutes | 2,090 |
 
-These labels are preliminary and should be corrected if any additional door transitions occurred. Captures were performed while the phone generated downlink traffic. The raw PCAP files are excluded from this repository because they contain surrounding apartment Wi-Fi traffic.
+The four new capture labels come from the user's state notes and filenames. Env1's open and closed files use different Ruckus AP radios; env2 uses the same radio for both states. This AP mismatch is a confound for env1. The raw PCAP files remain local because they can contain surrounding apartment Wi-Fi traffic.
 
 ## 4. Method
 
@@ -45,7 +49,7 @@ For exploratory modeling, reports are grouped into non-overlapping 30-second win
 
 The capture pipeline reported 389,492 packets with zero drops for session 1, 827,793 packets with zero drops for session 2, and approximately 925,000 packets for session 3; all available dumpcap summaries reported zero drops. The three project captures produced 916, 655, and 1,667 iPhone BFM reports, respectively; session 1 is unlabeled. The parser retained 648 and 1,636 reports in sessions 2 and 3 after excluding transition margins. Session 1 also yielded 78 NDPA frames overall, but this count is not treated as a door-state label or model result.
 
-The present data cannot support a final accuracy claim. The 30-second dataset contains 35 windows: 14 open windows from session 2, and 19 closed plus 2 open windows from session 3. In leave-one-session-out diagnostics, one fold tests only the open class; the other fold is skipped because its training session lacks usable windows from both classes. The tested fold's 0/14 accuracy is a diagnostic of the invalid split/data balance, not evidence that the sensing hypothesis fails or succeeds. A balanced, multi-day dataset is needed before model comparison or final evaluation.
+The current 30-second dataset contains 75 windows: 14 open windows from session 2; 19 closed and 2 open from session 3; and 10 windows per single-state capture. Capture-level leave-one-session-out nearest-centroid folds average 22.0% accuracy; most test folds contain one class. In a separate paired holdout, both env2 captures are reserved for testing (10 windows per class), while the other four captures provide 55 training windows (29 closed, 26 open). The confusion matrix (actual rows, predicted columns) is closed [10, 0] and open [1, 9], for 19/20 correct (95.0%). Env2 is the only new pair captured on the same AP radio for both states, but this is still a small same-day test. Env1 additionally changes AP radio between classes. These diagnostics are preliminary. The next evaluation should hold out a balanced session collected on a different day, with the same AP radio and geometry for both door states, and report per-class metrics and a confusion matrix.
 
 ![Session 2 exploratory phi heatmap](figures/session2_phi_heatmap.svg)
 
@@ -53,15 +57,19 @@ The present data cannot support a final accuracy claim. The 30-second dataset co
 
 ![Session 1 unlabeled phi heatmap](figures/session1_phi_heatmap.svg)
 
+![Same-day env2 open capture phi heatmap](figures/day1_env2_open_phi_heatmap.svg)
+
+![Same-day env2 closed capture phi heatmap](figures/day1_env2_closed_phi_heatmap.svg)
+
 Session 1's heatmap is descriptive only. The “45: closed door” note is a point observation and is not used to label a time interval.
 
 ## 6. Limitations and Next Experiments
 
-The captures are from one day, and each available session contains a single recorded state transition. Door state is consequently strongly confounded with session and time, and some end-of-session labels are assumed. The report counts also vary with traffic and sounding behavior. The next experiment should alternate open and closed states in repeated balanced blocks, record each transition time, preserve phone/AP geometry and workload, and repeat on a different day. Evaluation should hold out whole sessions or days, report class counts and a confusion matrix, and discuss failure cases.
+All captures are from one day. The two original interval-labeled sessions are imbalanced and assume no unreported later transitions. The four newer single-state captures add balanced class coverage, but open and closed blocks remain separate captures; env1 changes AP radio between states. Report counts vary with traffic and sounding behavior. The next experiment should collect a balanced session on another day, alternate open and closed states in repeated blocks, record every transition, preserve phone/AP geometry and workload, and hold out that complete day for evaluation. Report class counts, a confusion matrix, and failure cases.
 
 ## 7. Conclusion
 
-The work verifies that an Intel AX211 with a separate monitor interface can capture the author's phone's VHT BFM and that per-tone angles can be extracted. It does not yet establish reliable door-state classification. The current contribution is a reproducible capture and extraction pipeline plus a documented collection gap; model claims await balanced multi-session data.
+The work verifies that an Intel AX211 with a separate monitor interface can capture the author's phone's VHT BFM and that per-tone angles can be extracted. The current data and same-day diagnostic do not establish reliable door-state classification. The project has a reproducible capture and extraction pipeline, labeled derived data, and an initial baseline; a balanced different-day test and final paper, demo, and submission steps remain.
 
 ## References
 

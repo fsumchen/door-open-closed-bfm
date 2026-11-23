@@ -23,15 +23,18 @@ sudo chown "$USER:$USER" /tmp/door-session.pcapng
 
 Run `dumpcap` only after the enter script confirms `mon0` is monitor mode on channel 44 at 80 MHz, center 5210 MHz. Always recover after capture. Keep raw packet captures outside Git.
 
+The optional `scripts/capture_session.sh` helper scans for a target phone and captures a single state. It requires `PHONE_MAC` to be entered locally at runtime; the address is not stored in the repository. Record the label and setup notes for each capture.
+
 ## Data and current status
 
-Three raw 12-minute captures from the same day are available locally and are excluded from the repository. Session 1 has only a point label note, so its 916 extracted phone reports are retained as unlabeled data. Sessions 2 and 3 have interval labels. Only selected BFM reports from the user's phone are included as derived data.
+Five collection blocks from 23 November 2026 are represented in derived data: the original three 12-minute sessions plus two new paired experiments, each with separate five-minute open and closed captures. Raw PCAP files are local only and excluded from this package. Session 1 has only a point label note, so its 916 extracted phone reports remain unlabeled. The two original labeled sessions use a single reported transition each; the four new captures are single-state runs labeled from the user's capture notes.
 
 - Session 2: closed from 0–65 s; open from 65 s to end, based on the supplied notes.
 - Session 3: open from 0–83 s; closed from 83 s to end, based on the supplied notes.
 - After a 5-second transition margin, the extractor yielded 648 session-2 reports (4 closed / 644 open) and 1,636 session-3 reports (76 open / 1,560 closed).
+- New five-minute captures: env1 open 1,504 reports; env1 closed 3,183; env2 open 2,303; env2 closed 2,090. All four pass the phone-to-AP VHT category-21 BFM filter. Env1's open and closed captures used different Ruckus AP radios; env2 used the same AP radio for both states.
 
-The current data is highly imbalanced within each session, collected on one day, and depends on the assumption that no later unreported state changes occurred. These are collection limitations, not results to hide. Collect balanced alternating blocks across more sessions and days before final evaluation. Split by whole session/day; report a confusion matrix and failure cases.
+The derived dataset now has 11,364 labeled reports across the original interval-labeled sessions and four new single-state captures, plus 916 unlabeled reports. All data is from one day. The two original sessions remain imbalanced and partly rely on assumed end states; the new five-minute captures provide balanced class coverage, but env1 changes AP radio with door state. Current evaluation is exploratory only. Collect a matched session on a different day before final evaluation; split by whole capture/session and report a confusion matrix and failure cases.
 
 ## Decode
 
@@ -63,12 +66,17 @@ The extractor, window maker, baseline, and figures use Python's standard library
 
 ```bash
 python3 code/make_windows.py data/derived/day1-session2.csv data/derived/day1-session3.csv \
+  data/derived/day1-env1-open.csv data/derived/day1-env1-closed.csv \
+  data/derived/day1-env2-open.csv data/derived/day1-env2-closed.csv \
   --window-seconds 30 --min-reports 5 --min-purity 0.8 \
-  --output data/derived/windows-30s.csv
-python3 code/evaluate_loso.py data/derived/windows-30s.csv \
-  --output data/derived/exploratory_loso.json
+  --output data/derived/windows-30s-current.csv
+python3 code/evaluate_loso.py data/derived/windows-30s-current.csv \
+  --output data/derived/exploratory_loso_current.json
+python3 code/evaluate_group_holdout.py data/derived/windows-30s-current.csv \
+  --test-sessions day1-env2-open day1-env2-closed \
+  --output data/derived/exploratory_env2_holdout.json
 python3 code/plot_bfm_heatmaps.py data/derived/day1-session2.csv \
   --output paper/figures/session2_phi_heatmap.svg
 ```
 
-The current window data has 35 windows: session 2 contributes 14 open windows; session 3 contributes 19 closed and 2 open windows. The exploratory leave-one-session-out baseline has no valid two-class training/test coverage and is explicitly not a final evaluation.
+The updated window data has 75 windows. Capture-level leave-one-session-out folds average 22.0% accuracy, but most held-out captures contain one class. A paired env2 holdout has 20 test windows (10 per class) and 95.0% accuracy (closed: 10/10; open: 9/10); it is still a same-day exploratory result, and env1 changes AP radio with door state. Neither result is final performance. The different-day session is still needed for a credible generalization evaluation.

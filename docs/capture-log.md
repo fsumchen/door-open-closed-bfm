@@ -149,6 +149,21 @@ All initial collection sessions are being gathered on the same day. This limits 
 
 A final same-day session is planned as `day1-session3`; record its actual start, end, and door-state transition times when available.
 
+## Additional labeled captures — 23 November 2026
+
+Four five-minute single-state captures were collected after the earlier 12-minute sessions. Raw captures remain local under `/tmp` and are not included in the repository. Each was checked with the phone-transmitter, VHT action-category 21 filter before extraction.
+
+| Capture | UTC interval | Door label | Phone BFM reports | AP consistency |
+|---|---|---|---:|---|
+| `door-open-5m.pcapng` | 16:45:28–16:50:28 | Open | 1,504 | AP radio A |
+| `door-closed-5m.pcapng` | 16:55:03–17:00:03 | Closed | 3,183 | AP radio B (different from open) |
+| `door-open-env2.pcapng` | 17:18:18–17:23:17 | Open | 2,303 | AP radio A |
+| `door-closed-env2.pcapng` | 17:25:51–17:30:49 | Closed | 2,090 | AP radio A (same as paired open capture) |
+
+The first pair is confounded by a change in AP radio between states. The second pair uses the same AP radio and provides the cleaner same-day comparison. The four labels are single-state reports from the user; each capture contributes 300 seconds. Derived report CSVs omit MAC addresses. The original raw test `/tmp/mon0-ch44-active.pcapng` captured 10,253 packets with zero drops but contained no frames matching the logged phone address, so it is not included in the labeled dataset.
+
+The new derived files are `data/derived/day1-env1-open.csv`, `day1-env1-closed.csv`, `day1-env2-open.csv`, and `day1-env2-closed.csv`. Their report counts are 1,504, 3,183, 2,303, and 2,090, respectively. Do not publish raw captures or full device addresses.
+
 ## Project sessions extracted for the repository
 
 Raw source PCAPs remain outside this repo. The local capture log was extended with these results:

@@ -1,0 +1,178 @@
+{
+  "status": "exploratory_only",
+  "method": "standardized nearest centroid",
+  "split": "leave one session out",
+  "feature_columns": [
+    "phi_sin_low_mean",
+    "phi_sin_low_sd",
+    "phi_cos_low_mean",
+    "phi_cos_low_sd",
+    "psi_mean_low_mean",
+    "psi_mean_low_sd",
+    "psi_sd_low_mean",
+    "psi_sd_low_sd",
+    "phi_sin_high_mean",
+    "phi_sin_high_sd",
+    "phi_cos_high_mean",
+    "phi_cos_high_sd",
+    "psi_mean_high_mean",
+    "psi_mean_high_sd",
+    "psi_sd_high_mean",
+    "psi_sd_high_sd"
+  ],
+  "folds": [
+    {
+      "test_session": "day1-env1-closed",
+      "train_windows": 65,
+      "test_windows": 10,
+      "train_classes": {
+        "open": 36,
+        "closed": 29
+      },
+      "test_classes": {
+        "closed": 10
+      },
+      "status": "scored; interpret cautiously",
+      "accuracy": 0.0,
+      "confusion_matrix": {
+        "closed": {
+          "closed": 0,
+          "open": 10
+        },
+        "open": {
+          "closed": 0,
+          "open": 0
+        }
+      },
+      "test_class_coverage": 1
+    },
+    {
+      "test_session": "day1-env1-open",
+      "train_windows": 65,
+      "test_windows": 10,
+      "train_classes": {
+        "closed": 39,
+        "open": 26
+      },
+      "test_classes": {
+        "open": 10
+      },
+      "status": "scored; interpret cautiously",
+      "accuracy": 0.0,
+      "confusion_matrix": {
+        "closed": {
+          "closed": 0,
+          "open": 0
+        },
+        "open": {
+          "closed": 10,
+          "open": 0
+        }
+      },
+      "test_class_coverage": 1
+    },
+    {
+      "test_session": "day1-env2-closed",
+      "train_windows": 65,
+      "test_windows": 10,
+      "train_classes": {
+        "closed": 29,
+        "open": 36
+      },
+      "test_classes": {
+        "closed": 10
+      },
+      "status": "scored; interpret cautiously",
+      "accuracy": 0.1,
+      "confusion_matrix": {
+        "closed": {
+          "closed": 1,
+          "open": 9
+        },
+        "open": {
+          "closed": 0,
+          "open": 0
+        }
+      },
+      "test_class_coverage": 1
+    },
+    {
+      "test_session": "day1-env2-open",
+      "train_windows": 65,
+      "test_windows": 10,
+      "train_classes": {
+        "closed": 39,
+        "open": 26
+      },
+      "test_classes": {
+        "open": 10
+      },
+      "status": "scored; interpret cautiously",
+      "accuracy": 0.1,
+      "confusion_matrix": {
+        "closed": {
+          "closed": 0,
+          "open": 0
+        },
+        "open": {
+          "closed": 9,
+          "open": 1
+        }
+      },
+      "test_class_coverage": 1
+    },
+    {
+      "test_session": "day1-session2",
+      "train_windows": 61,
+      "test_windows": 14,
+      "train_classes": {
+        "closed": 39,
+        "open": 22
+      },
+      "test_classes": {
+        "open": 14
+      },
+      "status": "scored; interpret cautiously",
+      "accuracy": 0.9285714285714286,
+      "confusion_matrix": {
+        "closed": {
+          "closed": 0,
+          "open": 0
+        },
+        "open": {
+          "closed": 1,
+          "open": 13
+        }
+      },
+      "test_class_coverage": 1
+    },
+    {
+      "test_session": "day1-session3",
+      "train_windows": 54,
+      "test_windows": 21,
+      "train_classes": {
+        "closed": 20,
+        "open": 34
+      },
+      "test_classes": {
+        "open": 2,
+        "closed": 19
+      },
+      "status": "scored; interpret cautiously",
+      "accuracy": 0.19047619047619047,
+      "confusion_matrix": {
+        "closed": {
+          "closed": 2,
+          "open": 17
+        },
+        "open": {
+          "closed": 0,
+          "open": 2
+        }
+      },
+      "test_class_coverage": 2
+    }
+  ],
+  "conclusion": "Do not report as final performance: same-day sessions, severe class/session imbalance, and interval labels partly assumed.",
+  "mean_fold_accuracy": 0.21984126984126984
+}
