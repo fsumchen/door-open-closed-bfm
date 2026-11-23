@@ -1,0 +1,2 @@
+# Data extraction and exploratory baseline use Python standard library plus tshark.
+# Optional plotting/model libraries can be added after the next collection sessions.

@@ -56,3 +56,19 @@ The MAC arguments are local display filters and are not written into derived out
 - `data/derived/`: selected phone BFM data, no raw capture files.
 - `docs/`: capture setup and sanitized troubleshooting log.
 - `paper/`: paper source/PDF to be added.
+
+## Exploratory processing
+
+The extractor, window maker, baseline, and figures use Python's standard library (plus `tshark` for PCAP decoding):
+
+```bash
+python3 code/make_windows.py data/derived/day1-session2.csv data/derived/day1-session3.csv \
+  --window-seconds 30 --min-reports 5 --min-purity 0.8 \
+  --output data/derived/windows-30s.csv
+python3 code/evaluate_loso.py data/derived/windows-30s.csv \
+  --output data/derived/exploratory_loso.json
+python3 code/plot_bfm_heatmaps.py data/derived/day1-session2.csv \
+  --output paper/figures/session2_phi_heatmap.svg
+```
+
+The current window data has 35 windows: session 2 contributes 14 open windows; session 3 contributes 19 closed and 2 open windows. The exploratory leave-one-session-out baseline has no valid two-class training/test coverage and is explicitly not a final evaluation.
