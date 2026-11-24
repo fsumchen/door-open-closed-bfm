@@ -1,0 +1,32 @@
+{
+  "status": "different_day_holdout",
+  "method": "standardized nearest centroid",
+  "test_sessions": [
+    "day3-pair1-closed",
+    "day3-pair1-open",
+    "day3-pair2-closed",
+    "day3-pair2-open"
+  ],
+  "train_windows": 75,
+  "test_windows": 39,
+  "train_class_counts": {
+    "closed": 39,
+    "open": 36
+  },
+  "test_class_counts": {
+    "closed": 20,
+    "open": 19
+  },
+  "confusion_matrix_actual_rows_predicted_columns": {
+    "closed": {
+      "closed": 20,
+      "open": 0
+    },
+    "open": {
+      "closed": 0,
+      "open": 19
+    }
+  },
+  "accuracy": 1.0,
+  "warning": "Training captures were collected on 23 November 2026; held-out captures were collected on 24 November 2026. All held-out files use the same observed Ruckus BSSID, but capture files still represent separate single-state blocks."
+}

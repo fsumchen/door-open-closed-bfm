@@ -1,0 +1,10 @@
+# Raw wireless captures may contain other residents' traffic.
+*.pcap
+*.pcapng
+*.cap
+
+# Local run artifacts and environments
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store

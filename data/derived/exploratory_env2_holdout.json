@@ -1,0 +1,30 @@
+{
+  "status": "exploratory_only_same_day_holdout",
+  "method": "standardized nearest centroid",
+  "test_sessions": [
+    "day1-env2-closed",
+    "day1-env2-open"
+  ],
+  "train_windows": 55,
+  "test_windows": 20,
+  "train_class_counts": {
+    "closed": 29,
+    "open": 26
+  },
+  "test_class_counts": {
+    "closed": 10,
+    "open": 10
+  },
+  "confusion_matrix_actual_rows_predicted_columns": {
+    "closed": {
+      "closed": 10,
+      "open": 0
+    },
+    "open": {
+      "closed": 1,
+      "open": 9
+    }
+  },
+  "accuracy": 0.95,
+  "warning": "Same-day capture holdout only; not a different-day generalization result."
+}
